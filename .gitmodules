@@ -1,0 +1,8 @@
+[submodule "web"]
+	path = web
+	url = https://github.com/satu-n/works-sprig-web.git
+	branch = dev
+[submodule "api"]
+	path = api
+	url = https://github.com/satu-n/works-sprig-api.git
+	branch = dev
