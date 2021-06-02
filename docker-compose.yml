@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  web:
+    # image: {image-uri}
+    ports:
+      - 80:80
+  api:
+    # image: {image-uri}
+    ports:
+      - 3000:3000
+    environment:
+      ENV_FILES: /run/secrets/api
+    secrets:
+      - api
+    depends_on:
+      - db
+  # One-off container, only on first compose up with db.
+  # migration:
+  #   image: {image-uri}
+  #   command: cat /run/secrets/db-connection | xargs diesel migration run --database-url
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #   secrets:
+  #     - db-connection
+  #   depends_on:
+  #     - db
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
+    secrets:
+      - db-password
+
+volumes:
+  db:
+    driver_opts:
+      uid: 0
+      gid: 0
+
+secrets:
+  api:
+    file: _secrets/api.env
+  db-connection:
+    file: _secrets/db-connection.txt
+  db-password:
+    file: _secrets/db-password.txt

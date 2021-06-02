@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: ./web
+      target: build
+      args:
+        work_dir: $WORK_DIR
+    ports:
+      - 8000:8000
+    volumes:
+      - ./web:${WORK_DIR}:cached
+      # exclude from sync
+      - ${WORK_DIR}/elm-stuff
+  api:
+    build:
+      context: ./api
+      target: dev
+      args:
+        cmd_help_dir: $CMD_HELP_DIR
+        work_dir: $WORK_DIR
+    ports:
+      - ${API_PORT}:${API_PORT}
+    environment:
+      ENV_FILES: /run/secrets/api
+    secrets:
+      - api
+    volumes:
+      - ./api:${WORK_DIR}:cached
+      # exclude from sync
+      - ${WORK_DIR}/target
+    depends_on:
+      - db
+    restart: on-failure
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
+    secrets:
+      - db-password
+    restart: always
+
+volumes:
+  db:
+
+secrets:
+  api:
+    file: ${SECRETS_DIR}/api.env
+  db-password:
+    file: ${SECRETS_DIR}/db-password.txt

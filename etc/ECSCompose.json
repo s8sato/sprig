@@ -1,0 +1,51 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "application-autoscaling:*",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "route53:GetHostedZone",
+                "route53:GetHealthCheck",
+                "iam:CreateRole",
+                "iam:AttachRolePolicy",
+                "route53:ListHostedZonesByName",
+                "ecs:DeregisterTaskDefinition",
+                "servicediscovery:*",
+                "ecs:UpdateService",
+                "iam:PassRole",
+                "iam:DetachRolePolicy",
+                "ecs:CreateService",
+                "ec2:CreateSecurityGroup",
+                "ecs:ListTasks",
+                "ecs:RegisterTaskDefinition",
+                "route53:DeleteHostedZone",
+                "ecs:DescribeServices",
+                "logs:FilterLogEvents",
+                "ec2:DescribeRouteTables",
+                "ecs:DescribeTasks",
+                "route53:CreateHostedZone",
+                "logs:DescribeLogGroups",
+                "logs:DeleteLogGroup",
+                "ec2:CreateTags",
+                "ecs:CreateCluster",
+                "iam:DeleteRole",
+                "ecs:DeleteService",
+                "ecs:DeleteCluster",
+                "cloudformation:*",
+                "elasticloadbalancing:*",
+                "logs:CreateLogGroup",
+                "ec2:DescribeSecurityGroups",
+                "ecs:DescribeClusters",
+                "ec2:RevokeSecurityGroupIngress",
+                "ecs:ListAccountSettings",
+                "ec2:DescribeVpcs",
+                "ec2:DeleteSecurityGroup",
+                "ec2:DescribeSubnets"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
