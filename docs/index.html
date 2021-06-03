@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sprig, the Task Breaker</title>
+  <meta name="description "
+    content="List up, and enter as is. Break it down into processable units. Focus on the top task.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="images/android-touch-icon.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" sizes="180x180">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="elm.js"></script>
+</head>
+
+<body>
+  <div id="elm"></div>
+</body>
+
+<script>
+  let app = Elm.Main.init({
+    node: document.getElementById('elm')
+  });
+  // port Elm->JS newTab: open url in new tab
+  app.ports.newTab.subscribe(url => window.open(url, '_blank'));
+  // indentation in textarea
+  const target = 'app__input';
+  // port JS->Elm indentHere: tell caret position in textarea
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Tab' && event.target.id === target) {
+      event.preventDefault();
+      const input = document.getElementById(target);
+      app.ports.indentHere.send(input.selectionStart);
+    }
+  });
+  // port Elm->JS setCaret: adjust caret position in textarea
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  app.ports.setCaret.subscribe(async function (i) {
+    let input = document.getElementById(target);
+    await sleep(100);
+    input.setSelectionRange(i, i);
+  });
+</script>
+
+</html>

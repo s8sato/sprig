@@ -13,7 +13,7 @@ __Now implementing...__
 
 <!-- EXTERNAL LINK -->
 [Concept]: https://youtu.be/4MatFmieAwE
-<!-- TODOX [Demo1]: https://demo.sprig.work/ -->
+[Demo1]: https://demo.sprig.work/
 [Demo2]: https://satu-n.github.io/works-sprig/
 [Docker]: https://docs.docker.com/get-docker/
 [SendGrid]: https://sendgrid.com/
@@ -51,7 +51,7 @@ ___Sprig___, the Task Breaker ⚡
 * Click username to logout to create another account.
 * Data may be deleted without notice.
 
-1. [Demo on Amazon ECS, recommended][Demo1]
+1. [Demo on Amazon ECS - recommended][Demo1]
 2. [Demo on GitHub Pages & Heroku][Demo2]
    * The response may be delayed, because the API server will sleep if there is no access for a while.
 
@@ -76,23 +76,23 @@ See input area [Placeholder][Placeholder].
 |                                                               |         `Ctrl` `↑` | minimize input area                               |
 |                                                               |              `Esc` | blur input area                                   |
 |                                                               |                    | __NAVIGATE__                                      |
-| <img src="web/images/cmd_jk.png" width="24px" align="center"> |         `J` \| `K` | down & up cursor                                  |
-| <img src="web/images/cmd_x.png" width="24px" align="center">  |                `X` | select item at cursor                             |
-| <img src="web/images/cmd_u.png" width="24px" align="center">  |                `U` | open URL of item at cursor in new tab             |
-| <img src="web/images/cmd_i.png" width="24px" align="center">  |                `I` | Invert selection                                  |
+| <img src="docs/images/cmd_jk.png" width="24px" align="center"> |         `J` \| `K` | down & up cursor                                  |
+| <img src="docs/images/cmd_x.png" width="24px" align="center">  |                `X` | select item at cursor                             |
+| <img src="docs/images/cmd_u.png" width="24px" align="center">  |                `U` | open URL of item at cursor in new tab             |
+| <img src="docs/images/cmd_i.png" width="24px" align="center">  |                `I` | Invert selection                                  |
 |                                                               |                    | __EDIT__                                          |
-| <img src="web/images/cmd_s.png" width="24px" align="center">  |                `S` | Star item at cursor                               |
-| <img src="web/images/cmd_e.png" width="24px" align="center">  |                `E` | Execute selected items to archives                |
-| <img src="web/images/cmd_e.png" width="24px" align="center">  | `V` \| `Shift` `E` | reVert selected items to home                     |
-| <img src="web/images/cmd_c.png" width="24px" align="center">  |                `C` | Clone selected items to input area                |
+| <img src="docs/images/cmd_s.png" width="24px" align="center">  |                `S` | Star item at cursor                               |
+| <img src="docs/images/cmd_e.png" width="24px" align="center">  |                `E` | Execute selected items to archives                |
+| <img src="docs/images/cmd_e.png" width="24px" align="center">  | `V` \| `Shift` `E` | reVert selected items to home                     |
+| <img src="docs/images/cmd_c.png" width="24px" align="center">  |                `C` | Clone selected items to input area                |
 |                                                               |                    | __VIEW__                                          |
-| <img src="web/images/cmd_qp.png" width="24px" align="center"> |         `Q` \| `P` | time scale                                        |
-| <img src="web/images/cmd_wo.png" width="24px" align="center"> |         `W` \| `O` | time shift                                        |
-| <img src="web/images/cmd_f.png" width="24px" align="center">  |                `F` | Focus item at cursor: view directly related items |
-| <img src="web/images/cmd_a.png" width="24px" align="center">  |                `A` | Archives                                          |
-| <img src="web/images/cmd_r.png" width="24px" align="center">  |                `R` | Roots: items with no successor                    |
-| <img src="web/images/cmd_l.png" width="24px" align="center">  |                `L` | Leaves: items with no predecessor                 |
-| <img src="web/images/cmd_h.png" width="24px" align="center">  |                `H` | Home                                              |
+| <img src="docs/images/cmd_qp.png" width="24px" align="center"> |         `Q` \| `P` | time scale                                        |
+| <img src="docs/images/cmd_wo.png" width="24px" align="center"> |         `W` \| `O` | time shift                                        |
+| <img src="docs/images/cmd_f.png" width="24px" align="center">  |                `F` | Focus item at cursor: view directly related items |
+| <img src="docs/images/cmd_a.png" width="24px" align="center">  |                `A` | Archives                                          |
+| <img src="docs/images/cmd_r.png" width="24px" align="center">  |                `R` | Roots: items with no successor                    |
+| <img src="docs/images/cmd_l.png" width="24px" align="center">  |                `L` | Leaves: items with no predecessor                 |
+| <img src="docs/images/cmd_h.png" width="24px" align="center">  |                `H` | Home                                              |
 
 ### Logout
 
