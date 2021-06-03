@@ -33,6 +33,17 @@ services:
     depends_on:
       - db
     restart: on-failure
+  # One-off container, only on first compose up with db.
+  # migration:
+  #   build:
+  #     context: ./api
+  #     target: migration
+  #   command: bash -c 'diesel migration run --database-url $$(cat /run/secrets/db-connection)'
+  #   secrets:
+  #     - db-connection
+  #   depends_on:
+  #     - db
+  #   restart: on-failure
   db:
     image: postgres:13-alpine
     volumes:
@@ -49,5 +60,7 @@ volumes:
 secrets:
   api:
     file: ${SECRETS_DIR}/api.env
+  db-connection:
+    file: ${SECRETS_DIR}/db-connection.txt
   db-password:
     file: ${SECRETS_DIR}/db-password.txt

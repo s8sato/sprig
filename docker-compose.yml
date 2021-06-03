@@ -18,7 +18,7 @@ services:
   # One-off container, only on first compose up with db.
   # migration:
   #   image: {image-uri}
-  #   command: cat /run/secrets/db-connection | xargs diesel migration run --database-url
+  #   command: bash -c 'diesel migration run --database-url $$(cat /run/secrets/db-connection)'
   #   deploy:
   #     restart_policy:
   #       condition: on-failure
