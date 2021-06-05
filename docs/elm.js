@@ -8602,6 +8602,10 @@ var $author$project$EndPoint$App_ = function (a) {
 	return {$: 'App_', a: a};
 };
 var $author$project$EndPoint$Auth = {$: 'Auth'};
+var $author$project$Page$App$App$Deleted = F2(
+	function (a, b) {
+		return {$: 'Deleted', a: a, b: b};
+	});
 var $author$project$Page$App$App$Execed = F2(
 	function (a, b) {
 		return {$: 'Execed', a: a, b: b};
@@ -8629,6 +8633,20 @@ var $author$project$Page$App$App$Texted = function (a) {
 	return {$: 'Texted', a: a};
 };
 var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$nullable = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
+			]));
+};
+var $author$project$Page$App$App$decDelete = A2(
+	$elm$json$Json$Decode$field,
+	'token',
+	$elm$json$Json$Decode$nullable($elm$json$Json$Decode$string));
 var $author$project$Page$App$App$ResExec = F2(
 	function (count, chain) {
 		return {chain: chain, count: count};
@@ -9469,16 +9487,6 @@ var $author$project$Page$App$App$decSchedule = A3(
 		$elm_community$json_extra$Json$Decode$Extra$datetime,
 		$elm$json$Json$Decode$succeed($author$project$Page$App$App$Schedule)));
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
-var $elm$json$Json$Decode$null = _Json_decodeNull;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$nullable = function (decoder) {
-	return $elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
-				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
-			]));
-};
 var $author$project$Page$App$App$decItem = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'schedule',
@@ -10188,7 +10196,12 @@ var $elm$core$Dict$update = F3(
 			return A2($elm$core$Dict$remove, targetKey, dictionary);
 		}
 	});
-var $elm$http$Http$emptyBody = _Http_emptyBody;
+var $elm$http$Http$jsonBody = function (value) {
+	return A2(
+		_Http_pair,
+		'application/json',
+		A2($elm$json$Json$Encode$encode, 0, value));
+};
 var $elm$http$Http$expectStringResponse = F2(
 	function (toMsg, toResult) {
 		return A3(
@@ -10196,6 +10209,18 @@ var $elm$http$Http$expectStringResponse = F2(
 			'',
 			$elm$core$Basics$identity,
 			A2($elm$core$Basics$composeR, toResult, toMsg));
+	});
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
+var $elm$core$Result$mapError = F2(
+	function (f, result) {
+		if (result.$ === 'Ok') {
+			var v = result.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			var e = result.a;
+			return $elm$core$Result$Err(
+				f(e));
+		}
 	});
 var $jzxhuang$http_extras$Http$Detailed$BadBody = F3(
 	function (a, b, c) {
@@ -10210,17 +10235,6 @@ var $jzxhuang$http_extras$Http$Detailed$BadUrl = function (a) {
 };
 var $jzxhuang$http_extras$Http$Detailed$NetworkError = {$: 'NetworkError'};
 var $jzxhuang$http_extras$Http$Detailed$Timeout = {$: 'Timeout'};
-var $elm$core$Result$mapError = F2(
-	function (f, result) {
-		if (result.$ === 'Ok') {
-			var v = result.a;
-			return $elm$core$Result$Ok(v);
-		} else {
-			var e = result.a;
-			return $elm$core$Result$Err(
-				f(e));
-		}
-	});
 var $jzxhuang$http_extras$Http$Detailed$resolve = F2(
 	function (toResult, response) {
 		switch (response.$) {
@@ -10247,20 +10261,35 @@ var $jzxhuang$http_extras$Http$Detailed$resolve = F2(
 						_Utils_Tuple2(metadata, body)));
 		}
 	});
-var $jzxhuang$http_extras$Http$Detailed$responseToString = function (responseString) {
-	return A2(
-		$jzxhuang$http_extras$Http$Detailed$resolve,
-		function (_v0) {
-			var metadata = _v0.a;
-			var body = _v0.b;
-			return $elm$core$Result$Ok(
-				_Utils_Tuple2(metadata, body));
-		},
-		responseString);
-};
-var $jzxhuang$http_extras$Http$Detailed$expectString = function (toMsg) {
-	return A2($elm$http$Http$expectStringResponse, toMsg, $jzxhuang$http_extras$Http$Detailed$responseToString);
-};
+var $jzxhuang$http_extras$Http$Detailed$responseToJson = F2(
+	function (decoder, responseString) {
+		return A2(
+			$jzxhuang$http_extras$Http$Detailed$resolve,
+			function (_v0) {
+				var metadata = _v0.a;
+				var body = _v0.b;
+				return A2(
+					$elm$core$Result$mapError,
+					$elm$json$Json$Decode$errorToString,
+					A2(
+						$elm$json$Json$Decode$decodeString,
+						A2(
+							$elm$json$Json$Decode$map,
+							function (res) {
+								return _Utils_Tuple2(metadata, res);
+							},
+							decoder),
+						body));
+			},
+			responseString);
+	});
+var $jzxhuang$http_extras$Http$Detailed$expectJson = F2(
+	function (toMsg, decoder) {
+		return A2(
+			$elm$http$Http$expectStringResponse,
+			toMsg,
+			$jzxhuang$http_extras$Http$Detailed$responseToJson(decoder));
+	});
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
 };
@@ -10428,7 +10457,7 @@ var $elm$url$Url$Builder$crossOrigin = F3(
 	function (prePath, pathSegments, parameters) {
 		return prePath + ('/' + (A2($elm$core$String$join, '/', pathSegments) + $elm$url$Url$Builder$toQuery(parameters)));
 	});
-var $author$project$Config$epBase = 'https://sprig-demo.herokuapp.com/api';
+var $author$project$Config$epBase = 'https://sprig-demo-api.herokuapp.com/api';
 var $author$project$EndPoint$url = F2(
 	function (ep, query) {
 		var path = function () {
@@ -10464,6 +10493,45 @@ var $author$project$EndPoint$url = F2(
 		}();
 		return A3($elm$url$Url$Builder$crossOrigin, $author$project$Config$epBase, path, query);
 	});
+var $author$project$Util$request = F6(
+	function (method, ep, query, body, resMsg, dec) {
+		return $elm$http$Http$riskyRequest(
+			{
+				body: body,
+				expect: A2($jzxhuang$http_extras$Http$Detailed$expectJson, resMsg, dec),
+				headers: _List_Nil,
+				method: method,
+				timeout: $elm$core$Maybe$Nothing,
+				tracker: $elm$core$Maybe$Nothing,
+				url: A2($author$project$EndPoint$url, ep, query)
+			});
+	});
+var $author$project$Util$delete = F4(
+	function (ep, enc, resMsg, dec) {
+		return A6(
+			$author$project$Util$request,
+			'DELETE',
+			ep,
+			_List_Nil,
+			$elm$http$Http$jsonBody(enc),
+			resMsg,
+			dec);
+	});
+var $elm$http$Http$emptyBody = _Http_emptyBody;
+var $jzxhuang$http_extras$Http$Detailed$responseToString = function (responseString) {
+	return A2(
+		$jzxhuang$http_extras$Http$Detailed$resolve,
+		function (_v0) {
+			var metadata = _v0.a;
+			var body = _v0.b;
+			return $elm$core$Result$Ok(
+				_Utils_Tuple2(metadata, body));
+		},
+		responseString);
+};
+var $jzxhuang$http_extras$Http$Detailed$expectString = function (toMsg) {
+	return A2($elm$http$Http$expectStringResponse, toMsg, $jzxhuang$http_extras$Http$Detailed$responseToString);
+};
 var $author$project$Util$request_ = F5(
 	function (method, ep, query, body, resMsg) {
 		return $elm$http$Http$riskyRequest(
@@ -10481,49 +10549,6 @@ var $author$project$Util$delete_ = F2(
 	function (ep, resMsg) {
 		return A5($author$project$Util$request_, 'DELETE', ep, _List_Nil, $elm$http$Http$emptyBody, resMsg);
 	});
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $jzxhuang$http_extras$Http$Detailed$responseToJson = F2(
-	function (decoder, responseString) {
-		return A2(
-			$jzxhuang$http_extras$Http$Detailed$resolve,
-			function (_v0) {
-				var metadata = _v0.a;
-				var body = _v0.b;
-				return A2(
-					$elm$core$Result$mapError,
-					$elm$json$Json$Decode$errorToString,
-					A2(
-						$elm$json$Json$Decode$decodeString,
-						A2(
-							$elm$json$Json$Decode$map,
-							function (res) {
-								return _Utils_Tuple2(metadata, res);
-							},
-							decoder),
-						body));
-			},
-			responseString);
-	});
-var $jzxhuang$http_extras$Http$Detailed$expectJson = F2(
-	function (toMsg, decoder) {
-		return A2(
-			$elm$http$Http$expectStringResponse,
-			toMsg,
-			$jzxhuang$http_extras$Http$Detailed$responseToJson(decoder));
-	});
-var $author$project$Util$request = F6(
-	function (method, ep, query, body, resMsg, dec) {
-		return $elm$http$Http$riskyRequest(
-			{
-				body: body,
-				expect: A2($jzxhuang$http_extras$Http$Detailed$expectJson, resMsg, dec),
-				headers: _List_Nil,
-				method: method,
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: A2($author$project$EndPoint$url, ep, query)
-			});
-	});
 var $author$project$Util$get = F4(
 	function (ep, query, resMsg, dec) {
 		return A6($author$project$Util$request, 'GET', ep, query, $elm$http$Http$emptyBody, resMsg, dec);
@@ -10538,6 +10563,7 @@ var $elm$json$Json$Encode$list = F2(
 				_Json_emptyArray(_Utils_Tuple0),
 				entries));
 	});
+var $elm$json$Json$Encode$null = _Json_encodeNull;
 var $elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
 		A3(
@@ -10550,12 +10576,6 @@ var $elm$json$Json$Encode$object = function (pairs) {
 				}),
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
-};
-var $elm$http$Http$jsonBody = function (value) {
-	return A2(
-		_Http_pair,
-		'application/json',
-		A2($elm$json$Json$Encode$encode, 0, value));
 };
 var $author$project$Util$post = F4(
 	function (ep, enc, resMsg, dec) {
@@ -10595,6 +10615,15 @@ var $elm$url$Url$Builder$string = F2(
 			$elm$url$Url$Builder$QueryParameter,
 			$elm$url$Url$percentEncode(key),
 			$elm$url$Url$percentEncode(value));
+	});
+var $elm_community$maybe_extra$Maybe$Extra$unwrap = F3(
+	function (_default, f, m) {
+		if (m.$ === 'Nothing') {
+			return _default;
+		} else {
+			var a = m.a;
+			return f(a);
+		}
 	});
 var $author$project$Page$App$App$request = function (req) {
 	switch (req.$) {
@@ -10662,6 +10691,28 @@ var $author$project$Page$App$App$request = function (req) {
 					$author$project$Page$App$App$FromS,
 					$author$project$Page$App$App$Execed(revert)),
 				$author$project$Page$App$App$decExec);
+		case 'Delete':
+			var tids = req.a.tids;
+			var token = req.a.token;
+			var json = $elm$json$Json$Encode$object(
+				_List_fromArray(
+					[
+						_Utils_Tuple2(
+						'tasks',
+						A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$int, tids)),
+						_Utils_Tuple2(
+						'token',
+						A3($elm_community$maybe_extra$Maybe$Extra$unwrap, $elm$json$Json$Encode$null, $elm$json$Json$Encode$string, token))
+					]));
+			return A4(
+				$author$project$Util$delete,
+				$author$project$EndPoint$App_($author$project$EndPoint$Tasks),
+				json,
+				A2(
+					$elm$core$Basics$composeL,
+					$author$project$Page$App$App$FromS,
+					$author$project$Page$App$App$Deleted(tids)),
+				$author$project$Page$App$App$decDelete);
 		case 'Focus':
 			var item = req.a;
 			return A4(
@@ -10693,8 +10744,10 @@ var $author$project$Page$App$App$init = F2(
 				asOf: $elm$time$Time$millisToPosix(0),
 				caret: 0,
 				cursor: 0,
+				deleting: _List_Nil,
 				input: '',
 				isCurrent: true,
+				isDeleting: false,
 				isInput: false,
 				isInputFS: false,
 				items: _List_Nil,
@@ -10708,6 +10761,7 @@ var $author$project$Page$App$App$init = F2(
 				now: $elm$time$Time$millisToPosix(0),
 				selected: _List_Nil,
 				timescale: user.timescale,
+				token: $elm$core$Maybe$Nothing,
 				user: user,
 				view: $author$project$Page$App$App$None
 			},
@@ -10876,6 +10930,9 @@ var $author$project$Main$goto = F2(
 var $author$project$Main$newTab = _Platform_outgoingPort('newTab', $elm$core$Basics$identity);
 var $author$project$Main$setCaret = _Platform_outgoingPort('setCaret', $elm$core$Basics$identity);
 var $author$project$Page$App$App$Archives = {$: 'Archives'};
+var $author$project$Page$App$App$Delete = function (a) {
+	return {$: 'Delete', a: a};
+};
 var $author$project$Page$App$App$Down = {$: 'Down'};
 var $author$project$Page$App$App$Exec = function (a) {
 	return {$: 'Exec', a: a};
@@ -11997,15 +12054,6 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
-var $elm_community$maybe_extra$Maybe$Extra$unwrap = F3(
-	function (_default, f, m) {
-		if (m.$ === 'Nothing') {
-			return _default;
-		} else {
-			var a = m.a;
-			return f(a);
-		}
-	});
 var $author$project$Page$App$App$clone = F2(
 	function (mdl, ids) {
 		var cloneBy = F2(
@@ -12161,7 +12209,7 @@ var $author$project$Page$App$App$forTheItem = F2(
 			f,
 			A2($elm_community$list_extra$List$Extra$getAt, mdl.cursor, mdl.items));
 	});
-var $author$project$Page$Login = {$: 'Login'};
+var $author$project$Page$App$App$Logout = {$: 'Logout'};
 var $author$project$Util$errCode = function (e) {
 	if (e.$ === 'BadStatus') {
 		var meta = e.a;
@@ -12212,7 +12260,7 @@ var $author$project$Page$App$App$handle = F2(
 		if ((_v0.$ === 'Just') && (_v0.a === 401)) {
 			return _Utils_Tuple2(
 				mdl,
-				A2($author$project$Util$cmd, $author$project$Page$App$App$Goto, $author$project$Page$Login));
+				$author$project$Page$App$App$request($author$project$Page$App$App$Logout));
 		} else {
 			return _Utils_Tuple2(
 				_Utils_update(
@@ -12965,20 +13013,37 @@ var $author$project$Page$App$App$update = F2(
 							$elm$core$Platform$Cmd$none);
 					case 'KeyDown':
 						var key = fromU.a;
-						switch (key.$) {
-							case 'Char':
-								var c = key.a;
-								return A3(
-									$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
-									_Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none),
-									function () {
+						if (mdl.isDeleting) {
+							var cleared = _Utils_update(
+								mdl,
+								{deleting: _List_Nil, isDeleting: false, token: $elm$core$Maybe$Nothing});
+							if ((key.$ === 'Char') && ('y' === key.a.valueOf())) {
+								return _Utils_Tuple2(
+									cleared,
+									$author$project$Page$App$App$request(
+										$author$project$Page$App$App$Delete(
+											{tids: mdl.deleting, token: mdl.token})));
+							} else {
+								return _Utils_Tuple2(
+									_Utils_update(
+										cleared,
+										{msg: 'Deletion cancelled.'}),
+									$elm$core$Platform$Cmd$none);
+							}
+						} else {
+							switch (key.$) {
+								case 'Char':
+									var c = key.a;
+									if (mdl.isInput) {
+										return _Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none);
+									} else {
 										switch (c.valueOf()) {
 											case '/':
 												return _Utils_Tuple2(
 													mdl,
 													A2(
 														$elm$core$Task$attempt,
-														function (_v4) {
+														function (_v5) {
 															return $author$project$Page$App$App$NoOp;
 														},
 														$elm$browser$Browser$Dom$focus(
@@ -13137,11 +13202,17 @@ var $author$project$Page$App$App$update = F2(
 														}),
 													A2(
 														$elm$core$Task$attempt,
-														function (_v5) {
+														function (_v6) {
 															return $author$project$Page$App$App$NoOp;
 														},
 														$elm$browser$Browser$Dom$focus(
 															A2($author$project$Util$idBy, 'app', 'input'))));
+											case 'd':
+												return _Utils_Tuple2(
+													mdl,
+													$author$project$Page$App$App$request(
+														$author$project$Page$App$App$Delete(
+															{tids: mdl.selected, token: $elm$core$Maybe$Nothing})));
 											case 'a':
 												return _Utils_Tuple2(
 													mdl,
@@ -13168,64 +13239,64 @@ var $author$project$Page$App$App$update = F2(
 											default:
 												return _Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none);
 										}
-									}(),
-									mdl.isInput);
-							case 'NonChar':
-								var nc = key.a;
-								switch (nc.$) {
-									case 'Modifier':
-										var m = nc.a;
-										return _Utils_Tuple2(
-											_Utils_update(
-												mdl,
-												{
-													keyMod: A3($author$project$Page$App$App$setKeyMod, m, true, mdl.keyMod)
-												}),
-											$elm$core$Platform$Cmd$none);
-									case 'Enter':
-										return A3(
-											$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
-											_Utils_Tuple2(
+									}
+								case 'NonChar':
+									var nc = key.a;
+									switch (nc.$) {
+										case 'Modifier':
+											var m = nc.a;
+											return _Utils_Tuple2(
 												_Utils_update(
 													mdl,
-													{isInputFS: false}),
-												$author$project$Page$App$App$request(
-													$author$project$Page$App$App$Text(mdl.input))),
-											_Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none),
-											mdl.keyMod.ctrl);
-									case 'ArrowDown':
-										return _Utils_Tuple2(
-											A3(
+													{
+														keyMod: A3($author$project$Page$App$App$setKeyMod, m, true, mdl.keyMod)
+													}),
+												$elm$core$Platform$Cmd$none);
+										case 'Enter':
+											return A3(
 												$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
-												_Utils_update(
+												_Utils_Tuple2(
+													_Utils_update(
+														mdl,
+														{isInputFS: false}),
+													$author$project$Page$App$App$request(
+														$author$project$Page$App$App$Text(mdl.input))),
+												_Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none),
+												mdl.keyMod.ctrl);
+										case 'ArrowDown':
+											return _Utils_Tuple2(
+												A3(
+													$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
+													_Utils_update(
+														mdl,
+														{isInputFS: true}),
 													mdl,
-													{isInputFS: true}),
-												mdl,
-												mdl.keyMod.ctrl),
-											$elm$core$Platform$Cmd$none);
-									case 'ArrowUp':
-										return _Utils_Tuple2(
-											A3(
-												$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
-												_Utils_update(
+													mdl.keyMod.ctrl),
+												$elm$core$Platform$Cmd$none);
+										case 'ArrowUp':
+											return _Utils_Tuple2(
+												A3(
+													$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
+													_Utils_update(
+														mdl,
+														{isInputFS: false}),
 													mdl,
-													{isInputFS: false}),
+													mdl.keyMod.ctrl),
+												$elm$core$Platform$Cmd$none);
+										default:
+											return _Utils_Tuple2(
 												mdl,
-												mdl.keyMod.ctrl),
-											$elm$core$Platform$Cmd$none);
-									default:
-										return _Utils_Tuple2(
-											mdl,
-											A2(
-												$elm$core$Task$attempt,
-												function (_v7) {
-													return $author$project$Page$App$App$NoOp;
-												},
-												$elm$browser$Browser$Dom$blur(
-													A2($author$project$Util$idBy, 'app', 'input'))));
-								}
-							default:
-								return _Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none);
+												A2(
+													$elm$core$Task$attempt,
+													function (_v8) {
+														return $author$project$Page$App$App$NoOp;
+													},
+													$elm$browser$Browser$Dom$blur(
+														A2($author$project$Util$idBy, 'app', 'input'))));
+									}
+								default:
+									return _Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none);
+							}
 						}
 					case 'KeyUp':
 						var key = fromU.a;
@@ -13280,8 +13351,8 @@ var $author$project$Page$App$App$update = F2(
 					case 'Homed':
 						if (fromS.b.$ === 'Ok') {
 							var option = fromS.a;
-							var _v11 = fromS.b.a;
-							var res = _v11.b;
+							var _v12 = fromS.b.a;
+							var res = _v12.b;
 							var view_ = A3(
 								$author$project$Util$overwrite,
 								$author$project$Page$App$App$Home_,
@@ -13343,8 +13414,8 @@ var $author$project$Page$App$App$update = F2(
 						}
 					case 'Texted':
 						if (fromS.a.$ === 'Ok') {
-							var _v12 = fromS.a.a;
-							var res = _v12.b;
+							var _v13 = fromS.a.a;
+							var res = _v13.b;
 							if (res.$ === 'ResTextC') {
 								switch (res.a.$) {
 									case 'ResHelp':
@@ -13512,9 +13583,9 @@ var $author$project$Page$App$App$update = F2(
 																						mdl.user.name,
 																						'<==(allow',
 																						function () {
-																						var _v15 = r.permission;
-																						if (_v15.$ === 'Just') {
-																							var edit = _v15.a;
+																						var _v16 = r.permission;
+																						if (_v16.$ === 'Just') {
+																							var edit = _v16.a;
 																							return A3($Chadtech$elm_bool_extra$Bool$Extra$ifElse, 'EDIT', 'VIEW', edit);
 																						} else {
 																							return 'NONE';
@@ -13549,6 +13620,7 @@ var $author$project$Page$App$App$update = F2(
 															$author$project$Page$App$App$singularize,
 															'search results',
 															$elm$core$List$length(items)),
+														selected: _List_Nil,
 														view: $author$project$Page$App$App$Search
 													}),
 												$author$project$Page$App$App$inputBlur);
@@ -13591,8 +13663,8 @@ var $author$project$Page$App$App$update = F2(
 					case 'Execed':
 						if (fromS.b.$ === 'Ok') {
 							var revert = fromS.a;
-							var _v16 = fromS.b.a;
-							var res = _v16.b;
+							var _v17 = fromS.b.a;
+							var res = _v17.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									mdl,
@@ -13618,11 +13690,68 @@ var $author$project$Page$App$App$update = F2(
 							var e = fromS.b.a;
 							return A2($author$project$Page$App$App$handle, mdl, e);
 						}
+					case 'Deleted':
+						if (fromS.b.$ === 'Ok') {
+							var tids = fromS.a;
+							var _v18 = fromS.b.a;
+							var meta = _v18.a;
+							var res = _v18.b;
+							var _v19 = meta.statusCode;
+							switch (_v19) {
+								case 202:
+									return _Utils_Tuple2(
+										_Utils_update(
+											mdl,
+											{
+												deleting: tids,
+												isDeleting: true,
+												msg: A2(
+													$elm$core$String$join,
+													' ',
+													_List_fromArray(
+														[
+															'Deleting',
+															A2(
+															$author$project$Page$App$App$singularize,
+															'items',
+															$elm$core$List$length(tids)) + '.',
+															'Are you sure?',
+															'y/N'
+														])),
+												token: res
+											}),
+										$elm$core$Platform$Cmd$none);
+								case 200:
+									return _Utils_Tuple2(
+										_Utils_update(
+											mdl,
+											{
+												cursor: 0,
+												msg: A2(
+													$elm$core$String$join,
+													' ',
+													_List_fromArray(
+														[
+															'Deleted',
+															$author$project$Util$int(
+															$elm$core$List$length(tids))
+														])),
+												msgFix: true
+											}),
+										$author$project$Page$App$App$request(
+											$author$project$Page$App$App$Home($elm$core$Maybe$Nothing)));
+								default:
+									return _Utils_Tuple2(mdl, $elm$core$Platform$Cmd$none);
+							}
+						} else {
+							var e = fromS.b.a;
+							return A2($author$project$Page$App$App$handle, mdl, e);
+						}
 					case 'Focused':
 						if (fromS.b.$ === 'Ok') {
 							var item = fromS.a;
-							var _v17 = fromS.b.a;
-							var res = _v17.b;
+							var _v20 = fromS.b.a;
+							var res = _v20.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									mdl,
@@ -13710,9 +13839,9 @@ var $author$project$Page$App$App$update = F2(
 													A2(
 														$elm_community$maybe_extra$Maybe$Extra$unwrap,
 														_List_Nil,
-														function (_v18) {
-															var l = _v18.a;
-															var ls = _v18.b;
+														function (_v21) {
+															var l = _v21.a;
+															var ls = _v21.b;
 															return _Utils_ap(
 																ls,
 																$elm$core$List$singleton(
@@ -13828,6 +13957,7 @@ var $author$project$Page$LP$GotYou = function (a) {
 var $author$project$Page$LP$Goto = function (a) {
 	return {$: 'Goto', a: a};
 };
+var $author$project$Page$Login = {$: 'Login'};
 var $author$project$EndPoint$Register = {$: 'Register'};
 var $author$project$Page$LP$decGetAccount = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
@@ -33142,7 +33272,6 @@ var $author$project$Page$App$App$Input = function (a) {
 };
 var $author$project$Page$App$App$InputBlur = {$: 'InputBlur'};
 var $author$project$Page$App$App$InputFocus = {$: 'InputFocus'};
-var $author$project$Page$App$App$Logout = {$: 'Logout'};
 var $author$project$Page$App$App$Request = function (a) {
 	return {$: 'Request', a: a};
 };
@@ -33622,7 +33751,6 @@ var $author$project$Page$App$App$dotString = F2(
 				},
 				A2($elm$core$List$range, 0, 51)));
 	});
-var $elm$json$Json$Encode$null = _Json_encodeNull;
 var $elm_community$json_extra$Json$Encode$Extra$maybe = function (encoder) {
 	return A2(
 		$elm$core$Basics$composeR,
@@ -34077,7 +34205,13 @@ var $author$project$Page$App$App$view = function (mdl) {
 	};
 	return A2(
 		$elm$html$Html$map,
-		$author$project$Page$App$App$FromU,
+		A3(
+			$Chadtech$elm_bool_extra$Bool$Extra$ifElse,
+			function (_v1) {
+				return $author$project$Page$App$App$NoOp;
+			},
+			$author$project$Page$App$App$FromU,
+			mdl.isDeleting),
 		A2(
 			$elm$html$Html$div,
 			_List_fromArray(
