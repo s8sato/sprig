@@ -85,6 +85,7 @@ See input area [Placeholder][Placeholder].
 | <img src="docs/images/cmd_e.png" width="24px" align="center">  |                `E` | Execute selected items to archives                |
 | <img src="docs/images/cmd_e.png" width="24px" align="center">  | `V` \| `Shift` `E` | reVert selected items to home                     |
 | <img src="docs/images/cmd_c.png" width="24px" align="center">  |                `C` | Clone selected items to input area                |
+|                                                                |                `D` | Delete selected items permanently                |
 |                                                               |                    | __VIEW__                                          |
 | <img src="docs/images/cmd_qp.png" width="24px" align="center"> |         `Q` \| `P` | time scale                                        |
 | <img src="docs/images/cmd_wo.png" width="24px" align="center"> |         `W` \| `O` | time shift                                        |
