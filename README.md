@@ -6,11 +6,6 @@
   - [How to Use](#how-to-use)
     - [Tutorial Movie](#tutorial-movie)
 
-__Now implementing...__
-
-- [x] Keyboard-oriented mode
-- [ ] Touch-oriented mode
-
 <!-- EXTERNAL LINK -->
 [Concept]: https://youtu.be/4MatFmieAwE
 [Demo1]: https://demo.sprig.work/
@@ -22,12 +17,12 @@ __Now implementing...__
 [Tutorial]: https://youtu.be/PhxihW87N74
 
 <!-- INTERNAL LINK -->
-[Network Diagram]: etc/network_diagram.jpg
+[Schematic View]: etc/schematic_view.jpg
 [Placeholder]: web/src/Page/App/Placeholder.elm
 [Screen]: etc/screen_description.jpg
 [Screen-ja]: etc/screen_description-ja.jpg
 
-<!-- TODOX ![Network Diagram][Network Diagram] -->
+![Schematic View][Schematic View]
 
 ## What's this
 
@@ -99,6 +94,7 @@ See input area [Placeholder][Placeholder].
 
 Click username.
 
-## Thank you for reading !
+## Now developing...
 
-See also [My Dev Tips][Tips] if you like.
+- [x] Keyboard-oriented mode
+- [ ] Touch-oriented mode

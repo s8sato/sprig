@@ -2,11 +2,11 @@ version: "3.9"
 
 services:
   web:
-    # image: {image-uri}
+    image: ####
     ports:
       - 80:80
   api:
-    # image: {image-uri}
+    image: ####
     ports:
       - 3000:3000
     environment:
@@ -17,7 +17,7 @@ services:
       - db
   # One-off container, only on first compose up with db.
   # migration:
-  #   image: {image-uri}
+  #   image: ####
   #   command: bash -c 'diesel migration run --database-url $$(cat /run/secrets/db-connection)'
   #   deploy:
   #     restart_policy:
