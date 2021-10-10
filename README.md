@@ -1,4 +1,4 @@
-# works-sprig
+# sprig
 
   - [What's this](#whats-this)
     - [Concept Movie](#concept-movie)
@@ -9,11 +9,11 @@
 <!-- EXTERNAL LINK -->
 [Concept]: https://youtu.be/4MatFmieAwE
 [Demo1]: https://demo.sprig.work/
-[Demo2]: https://satu-n.github.io/works-sprig/
+[Demo2]: https://s8sato.github.io/sprig/
 [Docker]: https://docs.docker.com/get-docker/
 [SendGrid]: https://sendgrid.com/
 [SparkPost]: https://sparkpost.com/
-[Tips]: https://github.com/satu-n/tips
+[Tips]: https://github.com/s8sato/tips
 [Tutorial]: https://youtu.be/PhxihW87N74
 
 <!-- INTERNAL LINK -->
