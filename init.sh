@@ -89,6 +89,7 @@ dest="${SECRETS_DIR}/db-password.txt"
   echo "$DB_PASSWORD"
 } >>$dest
 
+cp api/heroku.sample.yml api/heroku.yml
 dest="api/heroku.yml"
 sed -i "10c\    cmd_help_dir: $CMD_HELP_DIR" $dest
 sed -i "11c\    work_dir: $WORK_DIR" $dest

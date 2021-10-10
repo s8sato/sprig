@@ -1,4 +1,4 @@
-# works-sprig
+# sprig
 
   - [What's this](#whats-this)
     - [Concept Movie](#concept-movie)
@@ -9,16 +9,16 @@
 <!-- EXTERNAL LINK -->
 [Concept]: https://youtu.be/4MatFmieAwE
 [Demo1]: https://demo.sprig.work/
-[Demo2]: https://satu-n.github.io/works-sprig/
+[Demo2]: https://s8sato.github.io/sprig/
 [Docker]: https://docs.docker.com/get-docker/
+[Placeholder]: https://github.com/s8sato/sprig-web/blob/stg/src/Page/App/Placeholder.elm
 [SendGrid]: https://sendgrid.com/
 [SparkPost]: https://sparkpost.com/
-[Tips]: https://github.com/satu-n/tips
+[Tips]: https://github.com/s8sato/tips
 [Tutorial]: https://youtu.be/PhxihW87N74
 
 <!-- INTERNAL LINK -->
 [Schematic View]: etc/schematic_view.jpg
-[Placeholder]: web/src/Page/App/Placeholder.elm
 [Screen]: etc/screen_description.jpg
 [Screen-ja]: etc/screen_description-ja.jpg
 
@@ -46,7 +46,7 @@ ___Sprig___, the Task Breaker ⚡
 * Click username to logout to create another account.
 * Data may be deleted without notice.
 
-1. [Demo on Amazon ECS - recommended][Demo1]
+1. Demo on Amazon ECS -- pending
 2. [Demo on GitHub Pages & Heroku][Demo2]
    * The response may be delayed, because the API server will sleep if there is no access for a while.
 
