@@ -40,7 +40,7 @@ ___Sprig___, the Task Breaker ⚡
 * ___Break it down into processable units.___
 * ___Focus on the top task.___
 
-### [Demo][Demo1]
+### [Demo][Demo2]
 
 * A random username and the same password will be issued.
 * Click username to logout to create another account.
